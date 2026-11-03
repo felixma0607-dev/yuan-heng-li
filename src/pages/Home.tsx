@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { HexLines } from '../components/HexLines.tsx'
 import { hktNow, loadAlmanac } from '../lib/almanac.ts'
 import { HOME_HARD } from '../lib/copy.ts'
 import { dayHexCard } from '../lib/dayHex.ts'
@@ -59,11 +60,14 @@ export function Home() {
               ))}
             </div>
             <Link className="day-line" to="/almanac">
-              <span className="day-title">
-                日卦　{today.card.name}　{today.card.keyword}
+              <HexLines lines={today.card.lines} />
+              <span className="day-copy">
+                <span className="day-title">
+                  日卦　{today.card.name}　{today.card.keyword}
+                </span>
+                <span className="day-image">卦象　{today.card.image}</span>
+                <span className="day-plain">白話　{today.card.plain}</span>
               </span>
-              <span className="day-image">卦象　{today.card.image}</span>
-              <span className="day-plain">白話　{today.card.plain}</span>
             </Link>
           </>
         ) : (
