@@ -29,7 +29,7 @@ export function CastResult({
     <section className="result" aria-live="polite">
       <div className="summary">
         <p className="method">{method}</p>
-        <h2 className="question">{question}</h2>
+        {question ? <h2 className="question">{question}</h2> : null}
         <div className="pair">
           <Link to={`/hexagrams/${primary.id}`} className="pair-card">
             <HexLines lines={primary.lines} moving={moving} />

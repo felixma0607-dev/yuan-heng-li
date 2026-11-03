@@ -26,6 +26,12 @@ export function normQuestion(question: string): string {
   return question.trim().replace(/\s+/g, '')
 }
 
+/** 問句可留空。有字先修剪，並用 norm 對同一問題。 */
+export function prepareQuestion(raw: string): { question: string; norm: string } {
+  const question = raw.trim()
+  return { question, norm: normQuestion(question) }
+}
+
 function readAll(): StoredMeihua[] {
   try {
     const raw = localStorage.getItem(KEY)

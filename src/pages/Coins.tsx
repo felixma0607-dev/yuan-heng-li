@@ -4,7 +4,7 @@ import { hktNow, loadAlmanac } from '../lib/almanac.ts'
 import { hexByLines } from '../lib/catalog.ts'
 import { YAO_KEYS } from '../lib/copy.ts'
 import { coinBit, COIN_FACES, fromBacks, tossBacks, type CoinFace } from '../lib/coins.ts'
-import { normQuestion } from '../lib/storage.ts'
+import { prepareQuestion } from '../lib/storage.ts'
 import { bodyUse, changedOf, mutualOf } from '../lib/yijing.ts'
 
 const LINE_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻']
@@ -12,7 +12,6 @@ const LINE_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻']
 export function Coins() {
   const [question, setQuestion] = useState('')
   const [faces, setFaces] = useState<(CoinFace | null)[]>([null, null, null, null, null, null])
-  const [error, setError] = useState('')
   const [showBody, setShowBody] = useState(false)
   const [bodyError, setBodyError] = useState('')
   const [body, setBody] = useState<ReturnType<typeof bodyUse> | null>(null)
@@ -33,15 +32,10 @@ export function Coins() {
   }
 
   function onCast() {
-    setError('')
     if (faces.some((face) => face === null)) return
-    if (!normQuestion(question)) {
-      setError('請先寫低想問的一件事。')
-      return
-    }
     const ready = faces as CoinFace[]
     setCast({
-      question: question.trim(),
+      question: prepareQuestion(question).question,
       lines: ready.map((face) => coinBit(face)),
       moving: ready.flatMap((face, index) => (face.moving ? [index + 1] : [])),
       monthZhi: '',
@@ -73,13 +67,15 @@ export function Coins() {
         本站寫死：背計三、字計二。三背＝九、老陽、動（●）。兩背一字＝八、少陰、靜。一背兩字＝七、少陽、靜。三字＝六、老陰、動（○）。
       </p>
       <label className="stack">
-        問句
+        <span>
+          問句<span className="note">　可留空</span>
+        </span>
         <textarea
           value={question}
           maxLength={200}
           rows={3}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="寫低一件事"
+          placeholder="想記低先寫"
         />
       </label>
       <p className="progress" aria-live="polite">
@@ -130,11 +126,6 @@ export function Coins() {
       <button type="button" className="primary" disabled={filled < 6} onClick={onCast}>
         起卦
       </button>
-      {error ? (
-        <p className="alert" role="alert">
-          {error}
-        </p>
-      ) : null}
       {cast && primary && changed && mutual ? (
         <CastResult
           question={cast.question}

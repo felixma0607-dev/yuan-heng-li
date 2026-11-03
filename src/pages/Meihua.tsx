@@ -7,7 +7,7 @@ import { hktNow, loadAlmanac, SHICHEN, shichenIndexForHour } from '../lib/almana
 import { hexById } from '../lib/catalog.ts'
 import { YAO_KEYS } from '../lib/copy.ts'
 import { InputError } from '../lib/errors.ts'
-import { findRecentMeihua, normQuestion, saveMeihua, type StoredMeihua } from '../lib/storage.ts'
+import { findRecentMeihua, prepareQuestion, saveMeihua, type StoredMeihua } from '../lib/storage.ts'
 import type { Ymd } from '../lib/types.ts'
 import {
   bodyUse,
@@ -47,8 +47,7 @@ export function Meihua() {
   }, [result])
 
   function buildCast(): StoredMeihua {
-    const norm = normQuestion(question)
-    if (!norm) throw new InputError('請先寫低想問的一件事。')
+    const { question: stored, norm } = prepareQuestion(question)
 
     if (mode === 'number') {
       const a = Number(first)
@@ -62,7 +61,7 @@ export function Meihua() {
       const usage = bodyUse(primary, almanac.monthZhi)
       return {
         at: Date.now(),
-        question: question.trim(),
+        question: stored,
         norm,
         mode,
         primaryId: primary.id,
@@ -105,7 +104,7 @@ export function Meihua() {
     const usage = bodyUse(primary, almanac.monthZhi)
     return {
       at: Date.now(),
-      question: question.trim(),
+      question: stored,
       norm,
       mode,
       primaryId: primary.id,
@@ -131,7 +130,6 @@ export function Meihua() {
   function onCast() {
     setError('')
     try {
-      if (!normQuestion(question)) throw new InputError('請先寫低想問的一件事。')
       const found = findRecentMeihua(question)
       if (found) {
         setRecent(found)
@@ -155,13 +153,15 @@ export function Meihua() {
       <h1>梅花起卦</h1>
       <p>一件事起一次。時間為預設，也可以改用兩個數。</p>
       <label className="stack">
-        問句
+        <span>
+          問句<span className="note">　可留空</span>
+        </span>
         <textarea
           value={question}
           maxLength={200}
           rows={3}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="寫低一件事"
+          placeholder="想記低先寫"
         />
       </label>
       <div className="segment" role="tablist" aria-label="起卦方式">
