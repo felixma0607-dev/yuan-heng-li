@@ -131,12 +131,19 @@ p { margin: 0 0 10px; }
 
 .day-line {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  gap: 2px;
+  gap: 12px;
   min-height: 44px;
   margin-top: 8px;
   text-decoration: none;
+}
+.day-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 .day-title {
   font-family: var(--serif);
