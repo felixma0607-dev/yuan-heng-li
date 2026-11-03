@@ -131,12 +131,22 @@ p { margin: 0 0 10px; }
 
 .day-line {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   min-height: 44px;
   margin-top: 8px;
+  text-decoration: none;
+}
+.day-title {
   font-family: var(--serif);
   font-size: 20px;
-  text-decoration: none;
+  line-height: 1.4;
+}
+.day-image, .day-plain {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
 }
 
 .entries {

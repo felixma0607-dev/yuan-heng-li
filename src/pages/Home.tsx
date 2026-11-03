@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { hktNow, loadAlmanac } from '../lib/almanac.ts'
 import { HOME_HARD } from '../lib/copy.ts'
+import { dayHexCard } from '../lib/dayHex.ts'
 import { hexFromTrigrams, timeFormula } from '../lib/yijing.ts'
 
 const ENTRIES = [
@@ -26,7 +27,7 @@ export function Home() {
         leap: almanac.leap,
       })
       const hex = hexFromTrigrams(timed.cast.lower, timed.cast.upper)
-      return { almanac, hex }
+      return { almanac, card: dayHexCard(hex) }
     } catch {
       return null
     }
@@ -58,7 +59,11 @@ export function Home() {
               ))}
             </div>
             <Link className="day-line" to="/almanac">
-              日卦　{today.hex.name}　{today.hex.keyword}
+              <span className="day-title">
+                日卦　{today.card.name}　{today.card.keyword}
+              </span>
+              <span className="day-image">卦象　{today.card.image}</span>
+              <span className="day-plain">白話　{today.card.plain}</span>
             </Link>
           </>
         ) : (
